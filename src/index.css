@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --washi: #F5F0E1;
+  --washi-light: #FCF9EF;
+  --paper: #FFFDF7;
+  --sumi: #1C1A16;
+  --sumi-light: #3D3933;
+  --muted: #7A7268;
+  --muted-light: #A89F92;
+  --kon: #2D4A6B;
+  --kon-deep: #1F3450;
+  --shu: #A8423A;
+  --moegi: #6B7F4A;
+  --hairline: #D9D0BC;
+  --hairline-light: #E8DFCB;
+}
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans JP', system-ui, 'Segoe UI', Roboto, sans-serif;
+  background-color: #E5DECA;
+  color: var(--sumi);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@media print {
+  /* Hide everything except the print portal */
+  body > * {
+    display: none !important;
+  }
+  #print-portal {
+    display: flex !important;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  /* Dashed cut guide around the label */
+  #print-label-wrapper {
+    display: inline-block !important;
+    border: 1px dashed #888 !important;
+    padding: 4mm !important;
+    box-shadow: none !important;
+  }
+
+  #print-label-wrapper::after {
+    content: "✂ 点線に沿って切り取ってください" !important;
+    display: block !important;
+    text-align: center !important;
+    font-size: 8pt !important;
+    color: #888 !important;
+    margin-top: 3mm !important;
+  }
+
+  /* Label content at actual size, no transform */
+  #print-portal #print-root {
+    transform: none !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
