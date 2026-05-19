@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { City } from '../types';
 import { PREFECTURES } from '../constants/prefectures';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout';
 
 interface UseCitySearchResult {
   cities: City[];
@@ -36,7 +37,7 @@ export function useCitySearch(prefectureCode: string | null): UseCitySearchResul
       method: 'getCities',
       prefecture: pref.name,
     });
-    fetch(`https://geoapi.heartrails.com/api/json?${params.toString()}`)
+    fetchWithTimeout(`https://geoapi.heartrails.com/api/json?${params.toString()}`)
       .then((res) => {
         if (!res.ok) throw new Error('network_error');
         return res.json();
@@ -48,9 +49,14 @@ export function useCitySearch(prefectureCode: string | null): UseCitySearchResul
           setLoading(false);
         }
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (!cancelled) {
-          setError('市区町村の取得に失敗しました。ネットワーク未接続の場合、手動で入力してください。');
+          const isTimeout = err instanceof Error && err.name === 'AbortError';
+          setError(
+            isTimeout
+              ? '通信タイムアウト。手動で入力してください。'
+              : '市区町村の取得に失敗しました。ネットワーク未接続の場合、手動で入力してください。',
+          );
           setLoading(false);
         }
       });

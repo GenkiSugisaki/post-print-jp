@@ -28,7 +28,7 @@ const INITIAL_STATE: AppState = {
 
 export default function App() {
   const [state, setState] = useState<AppState>(INITIAL_STATE);
-  const [sender, saveSender] = useSenderStorage();
+  const [sender, saveSender, clearSender] = useSenderStorage();
   const [autoOpened, setAutoOpened] = useState(!sender);
 
   const senderModalOpen = state.senderModalOpen || autoOpened;
@@ -120,6 +120,11 @@ export default function App() {
         onClose={() => {
           setAutoOpened(false);
           patch({ senderModalOpen: false });
+        }}
+        onClear={() => {
+          clearSender();
+          // モーダルは開いたまま — onboarding メッセージへ戻り、入力し直しまたはキャンセル可能。
+          setAutoOpened(true);
         }}
       />
     </div>

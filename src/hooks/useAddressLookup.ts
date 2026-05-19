@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout';
 
 interface AddressResult {
   prefecture: string;
@@ -35,7 +36,7 @@ export function useAddressLookup(zipcode: string): UseAddressLookupResult {
     setError(null);
 
     timerRef.current = setTimeout(() => {
-      fetch(`https://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${digits}`)
+      fetchWithTimeout(`https://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${digits}`)
         .then((res) => {
           if (!res.ok) throw new Error('network_error');
           return res.json();
@@ -52,10 +53,15 @@ export function useAddressLookup(zipcode: string): UseAddressLookupResult {
             setLoading(false);
           }
         })
-        .catch(() => {
+        .catch((err: unknown) => {
           if (!cancelled) {
+            const isTimeout = err instanceof Error && err.name === 'AbortError';
             setAddress(null);
-            setError('住所の自動取得に失敗しました。手動で入力してください。');
+            setError(
+              isTimeout
+                ? '通信タイムアウト。手動で入力してください。'
+                : '住所の自動取得に失敗しました。手動で入力してください。',
+            );
             setLoading(false);
           }
         });

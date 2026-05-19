@@ -115,7 +115,7 @@ Post-Print 是一款用于在日本标准信封（长形3号 / 长形4号）上�
 - ビルド: Vite 8
 - スタイル: Tailwind CSS 3.4
 - 永続化: 差出人情報のみ `localStorage` に保存
-- 外部API: HeartRails Geoapi（郵便番号 ↔ 住所 双方向）
+- 外部API: HeartRails Geoapi（郵便番号 ↔ 住所 双方向、5秒タイムアウト）— 入力された郵便番号 / 都道府県 / 市区町村が [HeartRails Geoapi](http://geoapi.heartrails.com/api.html) のサーバーに送信されます。差出人氏名や番地などの個人情報はブラウザの外には出ません。
 - テスト: Vitest + jsdom + Testing Library
 - デプロイ: GitHub Actions から GitHub Pages へ自動公開
 
@@ -125,7 +125,7 @@ Post-Print 是一款用于在日本标准信封（长形3号 / 长形4号）上�
 - Build: Vite 8
 - Styling: Tailwind CSS 3.4
 - Persistence: only sender info is stored in `localStorage`
-- External API: HeartRails Geoapi (postal code ↔ address, both ways)
+- External API: HeartRails Geoapi (postal code ↔ address, both ways; 5-second timeout) — postal codes / prefecture / city you type are sent to the [HeartRails Geoapi](http://geoapi.heartrails.com/api.html) server. Sender name and street numbers never leave your browser.
 - Testing: Vitest + jsdom + Testing Library
 - Deployment: auto-published to GitHub Pages via GitHub Actions
 
@@ -135,12 +135,12 @@ Post-Print 是一款用于在日本标准信封（长形3号 / 长形4号）上�
 - 构建工具：Vite 8
 - 样式方案：Tailwind CSS 3.4
 - 数据持久化：仅发件人信息写入 `localStorage`
-- 外部 API：HeartRails Geoapi（邮编 ↔ 地址 双向查询）
+- 外部 API：HeartRails Geoapi（邮编 ↔ 地址 双向查询,5 秒超时） — 输入的邮编 / 都道府县 / 市区町村会被发送到 [HeartRails Geoapi](http://geoapi.heartrails.com/api.html) 服务器。发件人姓名和门牌号等个人信息不离开浏览器。
 - 测试：Vitest + jsdom + Testing Library
 - 部署：GitHub Actions 自动发布到 GitHub Pages
 
 ---
 
-## ライセンス / License / 许可证
+## License
 
 MIT

@@ -9,6 +9,7 @@ interface Props {
   initial: SenderInfo | null;
   onSave: (info: SenderInfo) => void;
   onClose: () => void;
+  onClear?: () => void;
 }
 
 const EMPTY: SenderInfo = {
@@ -21,7 +22,7 @@ const EMPTY: SenderInfo = {
   showOnEnvelope: true,
 };
 
-export function SenderModal({ isOpen, initial, onSave, onClose }: Props) {
+export function SenderModal({ isOpen, initial, onSave, onClose, onClear }: Props) {
   const [form, setForm] = useState<SenderInfo>(initial ?? EMPTY);
 
   useEffect(() => {
@@ -37,6 +38,14 @@ export function SenderModal({ isOpen, initial, onSave, onClose }: Props) {
   const handleSave = () => {
     onSave(form);
     onClose();
+  };
+
+  const handleClear = () => {
+    if (!onClear) return;
+    // 共有 PC で前のユーザーの情報が残らないよう、確認後に即時消去。
+    if (!window.confirm('保存した差出人情報を削除します。よろしいですか？')) return;
+    onClear();
+    setForm(EMPTY);
   };
 
   return ReactDOM.createPortal(
@@ -126,11 +135,20 @@ export function SenderModal({ isOpen, initial, onSave, onClose }: Props) {
           <span>封筒に差出人を印刷する</span>
         </label>
 
-        <div className="flex justify-end gap-3 pt-3">
-          <Button variant="secondary" onClick={onClose}>
-            キャンセル
-          </Button>
-          <Button onClick={handleSave}>保存</Button>
+        <div className="flex items-center justify-between gap-3 pt-3">
+          {initial && onClear ? (
+            <Button variant="ghost" onClick={handleClear} type="button">
+              保存した情報を削除
+            </Button>
+          ) : (
+            <span />
+          )}
+          <div className="flex gap-3">
+            <Button variant="secondary" onClick={onClose}>
+              キャンセル
+            </Button>
+            <Button onClick={handleSave}>保存</Button>
+          </div>
         </div>
       </div>
     </div>,

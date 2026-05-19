@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout';
 
 interface UsePostalLookupResult {
   zipcode: string | null;
@@ -35,7 +36,7 @@ export function usePostalLookup(prefecture: string, city: string, town: string =
         prefecture: prefecture.trim(),
         city: city.trim(),
       });
-      fetch(`https://geoapi.heartrails.com/api/json?${params.toString()}`)
+      fetchWithTimeout(`https://geoapi.heartrails.com/api/json?${params.toString()}`)
         .then((res) => {
           if (!res.ok) throw new Error('network_error');
           return res.json();
@@ -63,10 +64,15 @@ export function usePostalLookup(prefecture: string, city: string, town: string =
             setLoading(false);
           }
         })
-        .catch(() => {
+        .catch((err: unknown) => {
           if (!cancelled) {
+            const isTimeout = err instanceof Error && err.name === 'AbortError';
             setZipcode(null);
-            setError('郵便番号の自動取得に失敗しました。手動で入力してください。');
+            setError(
+              isTimeout
+                ? '通信タイムアウト。手動で入力してください。'
+                : '郵便番号の自動取得に失敗しました。手動で入力してください。',
+            );
             setLoading(false);
           }
         });

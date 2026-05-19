@@ -12,7 +12,11 @@ function loadFromStorage(): SenderInfo | null {
   }
 }
 
-export function useSenderStorage(): [SenderInfo | null, (info: SenderInfo) => void] {
+export function useSenderStorage(): [
+  SenderInfo | null,
+  (info: SenderInfo) => void,
+  () => void,
+] {
   const [sender, setSender] = useState<SenderInfo | null>(loadFromStorage);
 
   const saveSender = (info: SenderInfo) => {
@@ -20,5 +24,14 @@ export function useSenderStorage(): [SenderInfo | null, (info: SenderInfo) => vo
     setSender(info);
   };
 
-  return [sender, saveSender];
+  const clearSender = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore: removing a non-existent key is harmless
+    }
+    setSender(null);
+  };
+
+  return [sender, saveSender, clearSender];
 }
